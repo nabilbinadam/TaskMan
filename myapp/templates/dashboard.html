@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            height: 100%;
+            padding: 48px 0 0; /* Space for navbar */
+            background-color: #343a40;
+        }
+        .sidebar a {
+            color: white;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+            color: white;
+        }
+        .main-content {
+            margin-left: 250px; /* Sidebar width */
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+    <h2 class="text-white text-center">Dashboard</h2>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'create_task_view' %}">Create Task</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'task_list_view' %}">Task List</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container">
+        <h1>Welcome to the Dashboard</h1>
+        <p>Here you can create tasks and view your task list.</p>
+
+        <!-- Content for Create Task or Task List will go here -->
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
