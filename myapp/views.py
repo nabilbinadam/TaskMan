@@ -1,11 +1,9 @@
 from django.shortcuts import render,redirect
-from .models import Item,Form
+from .models import Item,Form,Task
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-
-
 
 
 def item_list(request):
@@ -83,7 +81,46 @@ def dashboard(request):
 
 
 def create_task_view(request):
+    if request.method == "POST":
+        taskname=request.POST.get("task_name")
+        desc=request.POST.get("task_description")
+        date=request.POST.get("due_date")
+
+        if taskname and desc and date:
+            data = Task(TaskName=taskname, Description=desc, DueDate=date)
+            data.save()
+            
+
+
     return render(request, 'create_task.html')  
 
-def task_list_view(request):
-    return render(request, 'task_list_view.html') 
+def task_list_view(request): #get all data and return 
+
+    task = Task.objects.all() # This take all object in the DB.
+
+
+
+
+    return render(request, 'task_list_view.html',{'tasks':task}) 
+
+
+from django.shortcuts import render
+from .models import Task
+from django.utils import timezone
+
+def Time_Remaining(request, task_id):
+    # Fetch the specific task by its ID
+    task = Task.objects.get(id=task_id)
+
+    # Get the current time
+    current_time = timezone.now()  # Get the current date and time
+
+    # Calculate the time remaining until the due date
+    if task.DueDate:
+        # Combine the due date with the minimum time to create a datetime object
+        due_date = timezone.datetime.combine(task.DueDate, timezone.datetime.min.time())
+        time_remaining = due_date - current_time  # Calculate the time remaining
+    else:
+        time_remaining = None  # Handle case where due date is not set
+
+    return render(request, 'task_view_list.html', {'time_remaining': time_remaining})

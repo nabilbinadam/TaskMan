@@ -1,11 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>VIEW TASK LIST</h1>
-</body>
-</html>
+{% extends 'dashboard.html' %}
+
+{% block content %}
+<h1>Task List</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Description</th>
+            <th>Date Created</th>
+            <th>Due Date</th>
+            <th>Time Remaining</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tasks in tasks %}
+        <tr>
+            <td>{{ tasks.TaskName }}</td>
+            <td>{{ tasks.Description }}</td>
+            <td>{{ tasks.date_created }}</td>
+            <td>{{ tasks.DueDate }}</td>
+
+            <td>
+                {% if time_remaining %}
+                {{ time_remaining}}
+                {% else %}
+                Due date not set
+                {% endif %}
+            </td>
+            <td>
+                <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

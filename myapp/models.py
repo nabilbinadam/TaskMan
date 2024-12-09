@@ -11,6 +11,18 @@ class Item(models.Model):
 
 
 class Form(models.Model):
+        
         name = models.CharField(max_length=100)
         description= models.TextField()
-        
+
+
+class Task(models.Model):
+     
+     
+     TaskName= models.CharField(max_length=100)
+     Description=models.TextField()
+     DueDate=models.DateField()
+     date_created = models.DateTimeField(auto_now_add=True) 
+ 
+def __str__(self):
+        return self.task_name
