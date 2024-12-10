@@ -15,22 +15,26 @@
         </tr>
     </thead>
     <tbody>
-        {% for tasks in tasks %}
+        {% for task in tasks %}
         <tr>
-            <td>{{ tasks.TaskName }}</td>
-            <td>{{ tasks.Description }}</td>
-            <td>{{ tasks.date_created }}</td>
-            <td>{{ tasks.DueDate }}</td>
+            <td>{{ task.TaskName }}</td>
+            <td>{{ task.Description }}</td>
+            <td>{{ task.date_created }}</td>
+            <td>{{ task.DueDate }}</td>
 
             <td>
-                {% if time_remaining %}
-                {{ time_remaining}}
+                {% if task.time_remaining %}
+                {% if task.time_remaining.days >= 0 %}
+                {{ task.time_remaining.days }} days
+                {% else %}
+                Task is overdue
+                {% endif %}
                 {% else %}
                 Due date not set
                 {% endif %}
             </td>
             <td>
-                <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'edit_task_view' task.id %}" class="btn btn-warning btn-sm">Edit</a>
                 <a href="#" class="btn btn-danger btn-sm">Delete</a>
             </td>
         </tr>

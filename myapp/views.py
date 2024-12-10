@@ -1,9 +1,14 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import Item,Form,Task
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.utils import timezone
+
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
 
 
 def item_list(request):
@@ -94,33 +99,42 @@ def create_task_view(request):
 
     return render(request, 'create_task.html')  
 
-def task_list_view(request): #get all data and return 
-
-    task = Task.objects.all() # This take all object in the DB.
-
-
+def task_list_view(request):
+    tasks = Task.objects.all()  # Get all tasks
+    return render(request, 'task_list_view.html', {'tasks': tasks})
 
 
-    return render(request, 'task_list_view.html',{'tasks':task}) 
+@csrf_exempt  # Use with caution; consider using CSRF tokens in production
+@require_http_methods(["PUT"])
+def edit_task_view(request,task_id):
+    try:
+        # Fetch the task by ID
+        task = Task.objects.get(id=task_id)
 
+        # Parse the JSON body
+        body = json.loads(request.body)
 
-from django.shortcuts import render
-from .models import Task
-from django.utils import timezone
+        # Get values from the request body
+        taskname = body.get("task_name")
+        desc = body.get("task_description")
+        date = body.get("due_date")
 
-def Time_Remaining(request, task_id):
-    # Fetch the specific task by its ID
-    task = Task.objects.get(id=task_id)
+        # Update the task fields if provided
+        if taskname is not None:
+            task.TaskName = taskname
+        if desc is not None:
+            task.Description = desc
+        if date is not None:
+            task.DueDate = date
 
-    # Get the current time
-    current_time = timezone.now()  # Get the current date and time
+        # Save the updated task
+        task.save()
 
-    # Calculate the time remaining until the due date
-    if task.DueDate:
-        # Combine the due date with the minimum time to create a datetime object
-        due_date = timezone.datetime.combine(task.DueDate, timezone.datetime.min.time())
-        time_remaining = due_date - current_time  # Calculate the time remaining
-    else:
-        time_remaining = None  # Handle case where due date is not set
+        return JsonResponse({"success": True, "message": "Task updated successfully."}, status=200)
 
-    return render(request, 'task_view_list.html', {'time_remaining': time_remaining})
+    except Task.DoesNotExist:
+        return JsonResponse({"success": False, "message": "Task not found."}, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "message": "Invalid JSON."}, status=400)
+    except Exception as e:
+        return JsonResponse({"success": False, "message": str(e)}, status=500)
