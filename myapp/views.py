@@ -104,37 +104,10 @@ def task_list_view(request):
     return render(request, 'task_list_view.html', {'tasks': tasks})
 
 
-@csrf_exempt  # Use with caution; consider using CSRF tokens in production
+@csrf_exempt  
 @require_http_methods(["PUT"])
 def edit_task_view(request,task_id):
-    try:
-        # Fetch the task by ID
-        task = Task.objects.get(id=task_id)
 
-        # Parse the JSON body
-        body = json.loads(request.body)
 
-        # Get values from the request body
-        taskname = body.get("task_name")
-        desc = body.get("task_description")
-        date = body.get("due_date")
-
-        # Update the task fields if provided
-        if taskname is not None:
-            task.TaskName = taskname
-        if desc is not None:
-            task.Description = desc
-        if date is not None:
-            task.DueDate = date
-
-        # Save the updated task
-        task.save()
-
-        return JsonResponse({"success": True, "message": "Task updated successfully."}, status=200)
-
-    except Task.DoesNotExist:
-        return JsonResponse({"success": False, "message": "Task not found."}, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({"success": False, "message": "Invalid JSON."}, status=400)
-    except Exception as e:
-        return JsonResponse({"success": False, "message": str(e)}, status=500)
+    return(request,"edit.html")
+ 

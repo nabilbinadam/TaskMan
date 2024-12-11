@@ -18,5 +18,6 @@ urlpatterns = [
     path('create_task_view/',create_task_view,name='create_task_view'),
     path('task_list_view/',task_list_view,name='task_list_view'),
     path('task/edit/<int:task_id>/', edit_task_view, name='edit_task_view'),
+    path('edit/',edit_task_view,name='edit_task_view')
 ]
 
