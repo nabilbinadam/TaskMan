@@ -1,25 +1,19 @@
-<!-- form_edit.html -->
+<!-- edit.html -->
 {% extends 'dashboard.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1>Edit Form: {{ form.name }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="id_name">Name:</label>
-            {{ form.name|as_widget(attrs={'class': 'form-control'}) }}
-        </div>
-        <div class="form-group">
-            <label for="id_description">Description:</label>
-            {{ form.description|as_widget(attrs={'class': 'form-control'}) }}
-        </div>
-        <div class="form-group">
-            <label for="id_due_date">Due Date:</label>
-            {{ form.due_date|as_widget(attrs={'class': 'form-control', 'type': 'date'}) }}
-        </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a href="{% url 'form_list_view' %}" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+<h2>Edit Task</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="name">Task Name:</label>
+        <input type="text" id="name" name="name" class="form-control" value="{{ task.TaskName }}" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" class="form-control" required>{{ task.Description }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Task</button>
+    <a href="{% url 'task_list_view' %}" class="btn btn-secondary">Cancel</a>
+</form>
 {% endblock %}

@@ -2,6 +2,13 @@
 
 {% block content %}
 <h1>Task List</h1>
+{% if messages %}
+    <div class="alert alert-success" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
 <table class="table table-striped">
     <thead>
         <tr>

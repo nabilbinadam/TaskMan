@@ -104,10 +104,35 @@ def task_list_view(request):
     return render(request, 'task_list_view.html', {'tasks': tasks})
 
 
-@csrf_exempt  
-@require_http_methods(["PUT"])
-def edit_task_view(request,task_id):
 
 
-    return(request,"edit.html")
- 
+
+def edit_task_view(request, task_id):
+    # Retrieve the specific task using its ID
+    task = get_object_or_404(Task, id=task_id)
+
+    if request.method == "POST":
+        # Handle form submission
+        task_name = request.POST.get("name")
+        task_description = request.POST.get("description")
+
+        if task_name and task_description:  # Validate input
+            task.TaskName = task_name
+            task.Description = task_description
+            task.save()  # Save changes
+            messages.success(request, "Task updated successfully!")
+            return redirect('task_list_view')  # Redirect to task list
+
+    # Prepare context with the entire task object
+    context = {
+        "task": task  # Pass the entire task object
+    }
+
+    # Render the edit template with the context
+    return render(request, "edit.html", context=context)
+
+
+def delete_task_view(request,task_id):
+    
+
+ return(request,"edit.html")
