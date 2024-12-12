@@ -133,6 +133,11 @@ def edit_task_view(request, task_id):
 
 
 def delete_task_view(request,task_id):
+   if request.method=="POST":
+       task=get_object_or_404(Task, id=task_id)
+       print(task)
+       task.delete()
+       return HttpResponse("Delete success")
     
 
- return(request,"edit.html")
+   return redirect(request,"task_list_view.html")
