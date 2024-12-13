@@ -2,9 +2,11 @@ from django.shortcuts import render,redirect,get_object_or_404
 from .models import Item,Form,Task
 from django.http import HttpResponse,JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login 
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -30,7 +32,8 @@ def form_input(request):
 
 
 
-def loginPage(request):
+
+def loginPage(request,id=id):
 
     #get input in html
     #check wether is in database
@@ -42,39 +45,47 @@ def loginPage(request):
         user = authenticate(request, username=username, password=password)
 
 
-        if user not in None:
+        if id not in None:
             login(request,user)
-            return redirect('/dashboard')
+            return redirect('/dashboard/')
         else:
-            return render(request, 'loginpage.html', {'error': 'Invalid credentials'})
+            return render(request, 'login.html', {'error': 'Invalid credentials'})
 
+    return render(request,'dashboard.html')
+
+def login_view(request):
 
     return render(request,"login.html")
 
+def create_signUp(request):
+    if request.method == "POST":
+        usr = request.POST.get('username')
+        mail = request.POST.get('email')
+        pas = request.POST.get('password')
+        pass_confirm = request.POST.get('confirm_password')
+
+        # Check email duplicate
+        if User.objects.filter(email=mail).exists():
+            messages.error(request, "User already exists with this email.")
+            return redirect("/signUp/")
+
+        
+        elif pas == pass_confirm:
+            
+            new_user = User.objects.create_user(username=usr, email=mail, password=pas)
+            new_user.save()
+
+            messages.success(request, "User created successfully. You can log in now.")
+            return redirect("/dashboard/")  
+
+        else:
+            messages.error(request, "Passwords do not match.")
+            return redirect("/signUp/")
+
 
 def signUp(request):
-    if request.method == "POST":
-        user= request.POST.get("username")
-        email=request.POST.get("email")
-        passw= request.POST.get("password")
-        confirm_password = request.POST.get('confirm_password')
-
-
-        if passw == confirm_password:
-            
-            try:
-                user = object.create.user(user="username",email="email",passw="password",confirm_password="confirm_password")
-                messages.succes(request,"Succes")
-                return redirect(request,'login.html')
-                
-            except Exception as e:
-                messages.error(request,str(e))
-        else:
-                messages.error(request,'passwor error')
-
 
     return render(request,"signUp.html")
-
 
 
 def dashboard(request):
@@ -141,3 +152,10 @@ def delete_task_view(request,task_id):
     
 
    return redirect(request,"task_list_view.html")
+
+
+def home_view(request):
+
+
+
+    return render(request,"home.html")

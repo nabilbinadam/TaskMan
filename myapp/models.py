@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 # Create your models here.
 
 class Item(models.Model):
@@ -19,6 +21,7 @@ class Form(models.Model):
 
 
 class Task(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     TaskName = models.CharField(max_length=100)
     Description = models.TextField()
     DueDate = models.DateField()
