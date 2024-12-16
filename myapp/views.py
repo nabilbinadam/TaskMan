@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import Item,Form,Task
 from django.http import HttpResponse,JsonResponse
@@ -6,6 +7,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
+
 
 
 from django.views.decorators.csrf import csrf_exempt
@@ -83,6 +86,13 @@ def signUp(request):
 
     return render(request,"signUp.html")
 
+def logout_view(request):
+    logout(request)  # Log out the user
+    
+    return redirect('home')
+
+
+
 @login_required
 def dashboard(request):
 
@@ -91,20 +101,29 @@ def dashboard(request):
 
 
 
-
+@login_required
 def create_task_view(request):
     if request.method == "POST":
-        taskname=request.POST.get("task_name")
-        desc=request.POST.get("task_description")
-        date=request.POST.get("due_date")
+        taskname = request.POST.get("task_name")
+        desc = request.POST.get("task_description")
+        date = request.POST.get("due_date")
 
+        # Check that all fields are provided
         if taskname and desc and date:
-            data = Task(TaskName=taskname, Description=desc, DueDate=date)
-            data.save()
-            
+            try:
+                # Create a new Task instance and link it to the logged-in user
+                task = Task(TaskName=taskname, Description=desc, DueDate=date, user=request.user)
+                task.save()  # Save the task
+                return redirect('task_list_view')  # Redirect to the task list view
+            except IntegrityError:
+                return render(request, 'create_task.html', {'error': 'An error occurred while creating the task.'})
+        else:
+            return render(request, 'create_task.html', {'error': 'All fields are required.'})
+
+    return render(request, 'create_task.html')
 
 
-    return render(request, 'create_task.html')  
+
 @login_required
 
 def task_list_view(request):
@@ -151,12 +170,9 @@ def delete_task_view(request,task_id):
        task.delete()
        return HttpResponse("Delete success")
     
-
    return redirect(request,"task_list_view.html")
 
 
 def home_view(request):
-
-
-
     return render(request,"home.html")
+

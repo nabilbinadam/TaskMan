@@ -5,8 +5,8 @@ from .views import item_list
 from .views import form_input
 from .views import loginPage
 from .views import signUp
-from .views import dashboard,login_view  
-from .views import create_task_view, task_list_view,edit_task_view,delete_task_view,home_view,create_signUp
+from .views import dashboard,login_view
+from .views import create_task_view, task_list_view,edit_task_view,delete_task_view,home_view,create_signUp,logout_view
 
 
 urlpatterns = [
@@ -17,8 +17,8 @@ urlpatterns = [
     path('signup/',signUp, name='signUp'),
     path('create_signUp/',create_signUp, name='create_signUp'),
     path('dashboard/',dashboard ,name='dashboard'),
+    path('logout/',logout_view,name='logout_view'),
 
-    
 
     #TASK CRUD 
     path('create_task_view/',create_task_view,name='create_task_view'),
@@ -26,7 +26,6 @@ urlpatterns = [
     path('task_list_view/<int:task_id>/', edit_task_view, name='edit_task_view'),
     path('delete_list_view/<int:task_id>/',delete_task_view, name='delete_task_view')
 
-    
-    
+
 ]
 
