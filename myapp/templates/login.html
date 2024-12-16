@@ -34,7 +34,7 @@
         <h1>Login</h1>
         <p>Please enter your credentials</p>
     </div>
-    <form method="post" action="{& url 'login' &}">
+    <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <div class="form-group">
             <label for="username">Username</label>

@@ -35,23 +35,19 @@ def form_input(request):
 
 def loginPage(request,id=id):
 
-    #get input in html
-    #check wether is in database
-    #redirect
-
     if request.method == "POST":
-        username=request.POST.get("username")
-        password=request.POST.get("password")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
 
-
-        if id not in None:
-            login(request,user)
-            return redirect('/dashboard/')
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')  # Redirect to dashboard after successful login
         else:
             return render(request, 'login.html', {'error': 'Invalid credentials'})
 
-    return render(request,'dashboard.html')
+    return redirect('login.html')  # Redirect to the login form if GET request
+ 
 
 def login_view(request):
 
@@ -87,7 +83,7 @@ def signUp(request):
 
     return render(request,"signUp.html")
 
-
+@login_required
 def dashboard(request):
 
 
@@ -109,15 +105,20 @@ def create_task_view(request):
 
 
     return render(request, 'create_task.html')  
+@login_required
 
 def task_list_view(request):
-    tasks = Task.objects.all()  # Get all tasks
+   
+    if request.user.is_authenticated:
+        tasks = Task.objects.filter(user=request.user)  # Filter tasks by the logged-in user
+    else:
+        tasks = Task.objects.none()  # Return an empty queryset if the user is not authenticated
+    
     return render(request, 'task_list_view.html', {'tasks': tasks})
 
 
 
-
-
+@login_required
 def edit_task_view(request, task_id):
     # Retrieve the specific task using its ID
     task = get_object_or_404(Task, id=task_id)
@@ -142,7 +143,7 @@ def edit_task_view(request, task_id):
     # Render the edit template with the context
     return render(request, "edit.html", context=context)
 
-
+@login_required
 def delete_task_view(request,task_id):
    if request.method=="POST":
        task=get_object_or_404(Task, id=task_id)
