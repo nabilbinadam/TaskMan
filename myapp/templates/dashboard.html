@@ -37,7 +37,7 @@
 
 <!-- Sidebar -->
 <nav class="sidebar">
-    <h2 class="text-white text-center">Dashboard</h2>
+    <h2 class="text-white text-center">User: {{user.username}}</h2>
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link" href="{% url 'create_task_view' %}">Create Task</a>
@@ -46,7 +46,7 @@
             <a class="nav-link" href="{% url 'task_list_view' %}">Task List</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout_view %'}">Logout</a>
+            <a class="nav-link" href="{% url 'logout_view' %}">Logout</a>
         </li>
     </ul>
 </nav>

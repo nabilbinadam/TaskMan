@@ -36,7 +36,7 @@ def form_input(request):
 
 
 
-def loginPage(request,id=id):
+def loginPage(request):
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -75,11 +75,13 @@ def create_signUp(request):
             new_user.save()
 
             messages.success(request, "User created successfully. You can log in now.")
-            return redirect("/dashboard/")  
+            login(request, new_user)
+
+            return redirect('dashboard')  
 
         else:
             messages.error(request, "Passwords do not match.")
-            return redirect("/signUp/")
+            return redirect('signUp')
 
 
 def signUp(request):
@@ -89,7 +91,7 @@ def signUp(request):
 def logout_view(request):
     logout(request)  # Log out the user
     
-    return redirect('home')
+    return redirect('home_view')
 
 
 
@@ -176,3 +178,7 @@ def delete_task_view(request,task_id):
 def home_view(request):
     return render(request,"home.html")
 
+
+def user_session(request):
+
+    data = User.objectse
